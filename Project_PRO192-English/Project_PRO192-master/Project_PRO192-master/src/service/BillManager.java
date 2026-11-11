@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class BillManager {
     private TeaManager teaManager;
     private TeaPotManager teaPotManager;
@@ -24,13 +23,12 @@ public class BillManager {
         this.roomManager = roomManager;
     }
 
-    
-
     public void createBill(Scanner sc) {
         List<BillDetail> billDetails = new ArrayList<>();
-        // ============ BƯỚC 1: Thuê Phòng ============
+        
         System.out.println("\n========== TẠO HÓA ĐƠN ==========");
-        System.out.println("\n--- [0] THUÊ PHÒNG (nếu có) ---");
+        // ============ BƯỚC 1: Thuê Phòng ============
+        System.out.println("\n--- [1] THUÊ PHÒNG (nếu có) ---");
         System.out.print("Khách có thuê phòng không? (y/n): ");
         if (sc.nextLine().trim().equalsIgnoreCase("y")) {
             roomManager.display();
@@ -46,17 +44,17 @@ public class BillManager {
                 int h = readInteger(sc, "Số giờ thuê: ");
                 if (h <= 0) { System.out.println("❌ Số giờ phải > 0!"); continue; }
 
-                billDetails.add(new BillDetail("Phòng", p.getName()+ " (" + h + "h)", p.getPrice(), h));
+                // Thêm "Giờ" làm đơn vị
+                billDetails.add(new BillDetail("Phòng", p.getName()+ " (" + h + "h)", "Giờ", p.getPrice(), h));
                 p.setStatus(true);
                 System.out.printf("  ✅ Đã thuê: %s trong %d giờ\n", p.getName(), h);
-                break; // một khách thường chỉ thuê một phòng
+                break; 
             }
         }
 
-
         // ============ BƯỚC 2: MUA TRÀ ============
         System.out.println("\n--- [2] MUA TRÀ ---");
-        teaManager.displayAll();
+        teaManager.display();
         while (true) {
             System.out.print("Nhập mã trà (Enter để bỏ qua): ");
             String id = sc.nextLine().trim();
@@ -73,9 +71,10 @@ public class BillManager {
                 continue;
             }
 
-            billDetails.add(new BillDetail("Trà", tea.getName(), tea.getPrice(), quantity));
+            // THÊM ĐƠN VỊ VÀO ĐÂY (tea.getUnit())
+            billDetails.add(new BillDetail("Trà", tea.getName(), tea.getUnit(), tea.getPrice(), quantity));
             tea.setQuantity(tea.getQuantity() - quantity);
-            System.out.printf("  ✅ Đã thêm: %s x%d\n", tea.getName(), quantity);
+            System.out.printf("  ✅ Đã thêm: %s (%s) x%d\n", tea.getName(), tea.getUnit(), quantity);
         }
 
         // ============ BƯỚC 3: THUÊ ẤM (không bắt buộc) ============
@@ -96,7 +95,7 @@ public class BillManager {
                 int hours = readInteger(sc, "Số giờ thuê: ");
                 if (hours <= 0) { System.out.println("❌ Số giờ phải > 0!"); continue; }
 
-                billDetails.add(new BillDetail("Ấm thuê", teaPot.getName() + " (" + hours + "h)", teaPot.getRentalPrice(), hours));
+                billDetails.add(new BillDetail("Ấm thuê", teaPot.getName() + " (" + hours + "h)", "Giờ", teaPot.getRentalPrice(), hours));
                 teaPot.setRented(true);
                 System.out.printf("  ✅ Đã thuê: %s trong %d giờ\n", teaPot.getName(), hours);
             }
@@ -124,7 +123,7 @@ public class BillManager {
                     continue;
                 }
 
-                billDetails.add(new BillDetail("Đồ ăn kèm", dish.getName(), dish.getPrice(), quantity));
+                billDetails.add(new BillDetail("Đồ ăn kèm", dish.getName(), "Phần", dish.getPrice(), quantity));
                 dish.setQuantity(dish.getQuantity() - quantity);
                 System.out.printf("  ✅ Đã thêm: %s x%d\n", dish.getName(), quantity);
             }
@@ -144,15 +143,18 @@ public class BillManager {
 
         System.out.println("\n");
         System.out.println("╔══════════════════════════════════════════════════════════════════╗");
-        System.out.println("║                   🍵 HÓA ĐƠN TIỆM TRÀ MẠN 🍵             ║");
+        System.out.println("║                   🍵 HÓA ĐƠN TIỆM TRÀ MẠN 🍵                     ║");
         System.out.println("╠══════════════════════════════════════════════════════════════════╣");
-        System.out.printf("║ %-14s | %-20s | %10s | %5s | %12s ║%n",
+        System.out.printf("║ %-14s | %-22s | %10s | %5s | %12s ║%n",
                 "Loại", "Tên", "Đơn giá", "SL", "Thành tiền");
         System.out.println("╠══════════════════════════════════════════════════════════════════╣");
-
+        
         for (BillDetail detail : billDetails) {
-            System.out.printf("║ %-14s | %-20s | %8.0f đ | %5d | %9.0f đ ║%n",
-                    detail.getType(), detail.getName(), detail.getUnitPrice(),
+            // Gộp Tên + Đơn vị lại cho dễ đọc (VD: "Trà Móc Câu (100g)")
+            String displayName = detail.getName() + " (" + detail.getUnit() + ")";
+            
+            System.out.printf("║ %-14s | %-22s | %8.0f đ | %5d | %9.0f đ ║%n",
+                    detail.getType(), displayName, detail.getUnitPrice(),
                     detail.getQuantity(), detail.getTotalPrice());
             totalBill += detail.getTotalPrice();
         }

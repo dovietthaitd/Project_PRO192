@@ -1,23 +1,26 @@
 package model;
 
 public class BillDetail {
-    private String type;       // "Trà", "Ấm thuê", "Đồ ăn kèm"
+    private String type;       
     private String name;
-    private double unitPrice;
-    private int quantity;       // số lượng (hoặc số giờ nếu là ấm)
-    private double totalPrice;  // = donGia * soLuong
+    private String unit;       // <--- Phải có dòng này
+    private double unitPrice;  
+    private int quantity;      
+    private double totalPrice; 
 
-    public BillDetail(String type, String name, double unitPrice, int quantity) {
+    public BillDetail(String type, String name, String unit, double unitPrice, int quantity) {
         this.type = type;
         this.name = name;
+        this.unit = unit;      // <--- Phải gán giá trị
         this.unitPrice = unitPrice;
         this.quantity = quantity;
         this.totalPrice = unitPrice * quantity;
     }
 
     public String getType()      { return type; }
-    public String getName()       { return name; }
-    public double getUnitPrice()    { return unitPrice; }
-    public int getQuantity()      { return quantity; }
-    public double getTotalPrice() { return totalPrice; }
+    public String getName()      { return name; }
+    public String getUnit()      { return unit; }       // <--- Phải có hàm này
+    public double getUnitPrice() { return unitPrice; }
+    public int getQuantity()     { return quantity; }
+    public double getTotalPrice(){ return totalPrice; }
 }

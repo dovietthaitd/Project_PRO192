@@ -60,14 +60,19 @@ public class Main {
 
             String choice = sc.nextLine();
             switch (choice) {
-                case "1": teaManager.displayAll(); break;
+                case "1": teaManager.display(); break;
                 case "2":
-                    System.out.print("Mã: "); String id = sc.nextLine();
-                    System.out.print("Tên: "); String name = sc.nextLine();
-                    System.out.print("Giá: "); double price = Double.parseDouble(sc.nextLine());
-                    System.out.print("Số lượng: "); int quantity = Integer.parseInt(sc.nextLine());
-                    teaManager.add(new Tea(id, name, price, quantity));
-                    break;
+            System.out.print("Mã: "); String id = sc.nextLine();
+            System.out.print("Tên: "); String name = sc.nextLine();
+            System.out.print("Giá: "); double price = Double.parseDouble(sc.nextLine());
+            System.out.print("Số lượng: "); int quantity = Integer.parseInt(sc.nextLine());
+    
+    // Thêm dòng này để nhập Đơn vị
+    System.out.print("Đơn vị tính (VD: Phần, 100g): "); String unit = sc.nextLine(); 
+    
+    // Truyền thêm biến unit vào cuối
+    teaManager.add(new Tea(id, name, price, quantity, unit)); 
+    break;
                 case "3":
                     System.out.print("Nhập mã cần xóa: ");
                     String idToRemove = sc.nextLine();
@@ -140,14 +145,22 @@ public class Main {
 
     // ================== DỮ LIỆU MẪU ==================
     static void initializeSampleData() {
-        // Trà phổ biến
-        teaManager.add(new Tea("T01", "Phổ nhĩ(10g/phần)", 350000, 50));
-        teaManager.add(new Tea("T02", "Phổ nhĩ quýt(1 viên)", 50000, 30));
-        teaManager.add(new Tea("T03", "Đại Hồng Bào", 45000, 40));
-        teaManager.add(new Tea("T04", "Bạch Hào Ngân Châm", 40000, 60));
-        teaManager.add(new Tea("T05", "Mông Đỉnh Hoàng Nha", 30000, 25));
+       // Trà phổ biến
+        teaManager.add(new Tea("T01", "Phổ nhĩ", 350000, 50, "10g/phần"));
+        teaManager.add(new Tea("T02", "Phổ nhĩ quýt", 50000, 30, "1 viên"));
+        teaManager.add(new Tea("T03", "Đại Hồng Bào", 100000, 40, "10 gram"));
+        teaManager.add(new Tea("T04", "Bạch Hào Ngân Châm", 100000, 60, "10 gram"));
+        teaManager.add(new Tea("T05", "Mộng Đỉnh Hoàng Nha", 300000, 25, "10 gram"));
 
-        // Ấm trà
+// Trà bán mang về theo lượng (Thêm vào để test tính năng mới)
+        teaManager.add(new Tea("MV01", "Phổ nhĩ loại 1", 3200000, 50, "1 bánh 357 gram"));
+        teaManager.add(new Tea("MV02", "Phổ nhĩ loại 2", 1700000, 50, "1 bánh 357 gram"));
+        teaManager.add(new Tea("MV03", "Phổ nhĩ loại 3", 650000 , 50, "1 bánh 357 gram"));
+        teaManager.add(new Tea("MV04", "Phổ nhĩ quýt", 1400000, 30, "28 viên"));
+        teaManager.add(new Tea("MV05", "Đại Hồng Bào", 2190000, 40, "250 gram"));
+        teaManager.add(new Tea("MV06", "Bạch Hào Ngân Châm", 2500000, 60, "400 gram"));
+        teaManager.add(new Tea("MV07", "Mộng Đỉnh Hoàng Nha", 3500000, 25, "120 gram"));
+        
         teaPotManager.add(new TeaPot("A01", "Ấm tử sa nhỏ", 200000, 10));
         teaPotManager.add(new TeaPot("A02", "Ấm Sứ", 250000, 8));
         teaPotManager.add(new TeaPot("A03", "Ấm Tử Đào", 150000, 12));
